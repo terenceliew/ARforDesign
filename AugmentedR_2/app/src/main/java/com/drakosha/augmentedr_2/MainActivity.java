@@ -2,6 +2,7 @@ package com.drakosha.augmentedr_2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -18,14 +19,19 @@ import com.google.ar.sceneform.ux.TransformableNode;
 public class MainActivity extends AppCompatActivity {
 
     private ArFragment fragment;
+
     private Button cube;
     private Button sphere;
     private Button cylinder;
+    private Button model;
+    private Button model1;
 
     private enum ObjectType {
         CUBE,
         SPHERE,
-        CYLINDER
+        CYLINDER,
+        MODEL,
+        MODEL1,
     }
 
     ObjectType objectType = ObjectType.CUBE;
@@ -46,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
         cylinder = findViewById(R.id.cylinder);
         cylinder.setOnClickListener(view -> objectType = ObjectType.CYLINDER);
 
+        model = findViewById(R.id.model);
+        model.setOnClickListener(view -> objectType = ObjectType.MODEL);
+
+        model1 = findViewById(R.id.model1);
+        model1.setOnClickListener(view -> objectType = ObjectType.MODEL1);
+
         fragment.setOnTapArPlaneListener((hitResult, plane, motionEvent) -> {
 
             switch (objectType) {
@@ -58,6 +70,14 @@ public class MainActivity extends AppCompatActivity {
                 case CYLINDER:
                     createCylinder(hitResult.createAnchor());
                     break;
+
+                case MODEL:
+                    createModel(hitResult.createAnchor());
+                    break;
+
+                case MODEL1:
+                    createModel1(hitResult.createAnchor());
+
                 default:
                     break;
             }
@@ -97,6 +117,23 @@ public class MainActivity extends AppCompatActivity {
 
                     placeModel(modelRenderable, anchor);
                 });
+    }
+
+    private void createModel(Anchor anchor) {
+        // adding model to the scene
+        ModelRenderable.builder()
+                .setSource(this, Uri.parse("TocoToucan.sfb"))
+                .build()
+                .thenAccept(modelRenderable -> placeModel(modelRenderable, anchor));
+
+    }
+
+    private void createModel1(Anchor anchor) {
+        // adding model to the scene
+        ModelRenderable.builder()
+                .setSource(this, Uri.parse("sofa.sfb"))
+                .build()
+                .thenAccept(modelRenderable -> placeModel(modelRenderable, anchor));
 
     }
 
